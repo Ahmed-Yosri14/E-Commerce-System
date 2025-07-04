@@ -6,105 +6,150 @@ public class Main {
         MobileScratchCard scratchCard = new MobileScratchCard("Scratch Card", 50, 100);
         Customer alice = new Customer("Alice", 1000);
         Customer bob = new Customer("Bob", 2000);
+
+        // Add 2 cheese to Alice's cart (should succeed)
         try {
             alice.addToCart(cheese, 2);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Add 1 biscuits to Alice's cart (should succeed)
+        try {
             alice.addToCart(biscuits, 1);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Add 3 scratch cards to Alice's cart (should succeed)
+        try {
             alice.addToCart(scratchCard, 3);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Add 1 cheese to Bob's cart (should succeed)
+        try {
             bob.addToCart(cheese, 1);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Add 1 TV to Bob's cart (should succeed)
+        try {
             bob.addToCart(tv, 1);
         } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
             System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
         }
 
-        System.out.println("=== Initial Cart State ===");
+        // Print initial cart state for Alice
+        // Expected: Alice's cart contains 2x Cheese, 1x Biscuits, 3x Scratch Card
         CartPrinter.printCartDetails(alice.getName(), alice.getCart());
-        CartPrinter.printCartDetails(bob.getName(), bob.getCart());
-        try {
-            System.out.println("=== Testing Remove Functionality ===");
-            alice.removeFromCart(cheese, 1);
-            System.out.println("Removed 1 cheese from Alice's cart");
-            CartPrinter.printCartDetails(alice.getName(), alice.getCart());
-            alice.removeAllFromCart(biscuits);
-            System.out.println("Removed all biscuits from Alice's cart");
-            CartPrinter.printCartDetails(alice.getName(), alice.getCart());
-            bob.removeFromCart(tv, 1);
-            System.out.println("Removed TV from Bob's cart");
-            CartPrinter.printCartDetails(bob.getName(), bob.getCart());
 
-        } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
-            System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
-        }
+        // Print initial cart state for Bob
+        // Expected: Bob's cart contains 1x Cheese, 1x TV
+        CartPrinter.printCartDetails(bob.getName(), bob.getCart());
+
+        // Remove 1 cheese from Alice's cart (should succeed)
+        // Expected: Alice's cart now has 1x Cheese, 1x Biscuits, 3x Scratch Card
         try {
-            System.out.println("=== Testing Remove Error Cases ===");
+            alice.removeFromCart(cheese, 1);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        CartPrinter.printCartDetails(alice.getName(), alice.getCart());
+
+        // Remove all biscuits from Alice's cart (should succeed)
+        // Expected: Alice's cart now has 1x Cheese, 3x Scratch Card
+        try {
+            alice.removeAllFromCart(biscuits);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        CartPrinter.printCartDetails(alice.getName(), alice.getCart());
+
+        // Remove TV from Bob's cart (should succeed)
+        // Expected: Bob's cart now has 1x Cheese
+        try {
+            bob.removeFromCart(tv, 1);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        CartPrinter.printCartDetails(bob.getName(), bob.getCart());
+
+        // Try to remove TV from Alice's cart (should fail, not in cart)
+        // Expected: Error message
+        try {
             alice.removeFromCart(tv, 1);
         } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
             System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
         }
+
+        // Try to remove 5 cheese from Alice's cart (should fail, only 1 in cart)
+        // Expected: Error message
         try {
             alice.removeFromCart(cheese, 5);
         } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
             System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
         }
 
+        // Try to remove -1 scratch card from Alice's cart (should fail, negative quantity)
+        // Expected: Error message
         try {
             alice.removeFromCart(scratchCard, -1);
-
         } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
             System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
         }
 
+        // Try to remove 0 scratch card from Alice's cart (should fail, zero quantity)
+        // Expected: Error message
         try {
             alice.removeFromCart(scratchCard, 0);
         } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
             System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
+        }
+
+        // Clear Alice's cart (should succeed)
+        // Expected: Alice's cart is empty
+        try {
+            alice.clearCart();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        CartPrinter.printCartDetails(alice.getName(), alice.getCart());
+
+        // Prepare for checkout
+        // Add 2 cheese and 1 biscuits to Alice's cart
+        try {
+            alice.addToCart(cheese, 2);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         try {
-            System.out.println("=== Testing Clear Cart ===");
-            alice.clearCart();
-            System.out.println("Cleared Alice's cart");
-            CartPrinter.printCartDetails(alice.getName(), alice.getCart());
-
+            alice.addToCart(biscuits, 1);
         } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
             System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
         }
 
-        CheckoutService checkoutService = new CheckoutService();
+        // Setup services
+        ShippingCalculator shippingCalculator = new WeightBasedShippingCalculator();
+        ShippingService shippingService = new ShippingService(shippingCalculator);
+        CheckoutService checkoutService = new CheckoutService(shippingService);
+
+        // Checkout Alice (should succeed)
+        // Expected: Shipment notice and checkout receipt printed to console
         try {
             checkoutService.checkout(alice, alice.getCart());
         } catch (Exception e) {
-            System.out.println();
-            System.out.println("=".repeat(50));
             System.out.println(e.getMessage());
-            System.out.println("=".repeat(50));
-            System.out.println();
+        }
+
+        // Try to checkout Alice again with empty cart (should fail)
+        // Expected: Error message (cart is empty)
+        try {
+            checkoutService.checkout(alice, alice.getCart());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

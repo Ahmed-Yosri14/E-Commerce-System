@@ -1,23 +1,25 @@
 import java.util.*;
 
 public class CheckoutService {
-    private static final double SHIPPING_RATE_PER_KG = 30.0;
+    private ShippingService shippingService;
+    private List<CheckoutStep> steps = new ArrayList<>();
+
+    public CheckoutService(ShippingService shippingService) {
+        this.shippingService = shippingService;
+        steps.add(new StockValidationStep());
+        steps.add(new ExpirationValidationStep());
+        // Add more steps as needed
+    }
 
     public void checkout(Customer customer, Cart cart) throws Exception {
-        if (cart.isEmpty()) {
-            throw new Exception("Cart is empty");
+        for (CheckoutStep step : steps) {
+            step.execute(customer, cart);
         }
         double subtotal = 0;
         List<ShippableOrderItem> shippableOrderItems = new ArrayList<>();
         for (CartItem item : cart.getItems()) {
             Product product = item.getProduct();
             int qty = item.getQuantity();
-            if (qty > product.getQuantity()) {
-                throw new Exception(product.getName() + " is out of stock");
-            }
-            if (product.isExpired()) {
-                throw new Exception(product.getName() + " is expired");
-            }
             subtotal += product.getPrice() * qty;
             if (product.isShippable()) {
                 shippableOrderItems.add(new ShippableOrderItem(
@@ -28,8 +30,7 @@ public class CheckoutService {
         }
         double shipping = 0;
         if (!shippableOrderItems.isEmpty()) {
-            double totalWeight = ShippingService.ship(shippableOrderItems);
-            shipping = totalWeight * SHIPPING_RATE_PER_KG;
+            shipping = shippingService.ship(shippableOrderItems);
         }
         double total = subtotal + shipping;
         if (customer.getBalance() < total) {

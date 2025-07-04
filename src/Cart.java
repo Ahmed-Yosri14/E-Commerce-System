@@ -37,8 +37,7 @@ public class Cart {
         if (newQuantity == 0) {
             items.remove(itemToRemove);
         } else {
-            itemToRemove = new CartItem(product, newQuantity);
-            items.set(items.indexOf(itemToRemove), itemToRemove);
+            itemToRemove.setQuantity(newQuantity);
         }
     }
     public void removeAll(Product product) throws Exception {
