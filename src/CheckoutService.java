@@ -8,10 +8,12 @@ public class CheckoutService {
         this.shippingService = shippingService;
         steps.add(new StockValidationStep());
         steps.add(new ExpirationValidationStep());
-        // Add more steps as needed
     }
 
     public void checkout(Customer customer, Cart cart) throws Exception {
+        if (cart.isEmpty()) {
+            throw new Exception("Cart is empty");
+        }
         for (CheckoutStep step : steps) {
             step.execute(customer, cart);
         }
@@ -42,5 +44,6 @@ public class CheckoutService {
         }
         customer.deductBalance(total);
         ReceiptPrinter.printReceipt(customer.getName(), customer.getBalance(), cart, subtotal, shipping, total);
+        cart.clear();
     }
 } 
