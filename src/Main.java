@@ -21,19 +21,19 @@ public class Main {
         }
 
         System.out.println("=== Initial Cart State ===");
-        alice.printCartDetails();
-        bob.printCartDetails();
+        CartPrinter.printCartDetails(alice.getName(), alice.getCart());
+        CartPrinter.printCartDetails(bob.getName(), bob.getCart());
         try {
             System.out.println("=== Testing Remove Functionality ===");
             alice.removeFromCart(cheese, 1);
             System.out.println("Removed 1 cheese from Alice's cart");
-            alice.printCartDetails();
+            CartPrinter.printCartDetails(alice.getName(), alice.getCart());
             alice.removeAllFromCart(biscuits);
             System.out.println("Removed all biscuits from Alice's cart");
-            alice.printCartDetails();
+            CartPrinter.printCartDetails(alice.getName(), alice.getCart());
             bob.removeFromCart(tv, 1);
             System.out.println("Removed TV from Bob's cart");
-            bob.printCartDetails();
+            CartPrinter.printCartDetails(bob.getName(), bob.getCart());
 
         } catch (Exception e) {
             System.out.println();
@@ -86,7 +86,7 @@ public class Main {
             System.out.println("=== Testing Clear Cart ===");
             alice.clearCart();
             System.out.println("Cleared Alice's cart");
-            alice.printCartDetails();
+            CartPrinter.printCartDetails(alice.getName(), alice.getCart());
 
         } catch (Exception e) {
             System.out.println();

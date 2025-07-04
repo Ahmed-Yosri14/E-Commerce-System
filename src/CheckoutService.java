@@ -8,8 +8,7 @@ public class CheckoutService {
             throw new Exception("Cart is empty");
         }
         double subtotal = 0;
-        List<ShippableItem> shippableItems = new ArrayList<>();
-        List<Integer> shippableQuantities = new ArrayList<>();
+        List<ShippableOrderItem> shippableOrderItems = new ArrayList<>();
         for (CartItem item : cart.getItems()) {
             Product product = item.getProduct();
             int qty = item.getQuantity();
@@ -21,13 +20,15 @@ public class CheckoutService {
             }
             subtotal += product.getPrice() * qty;
             if (product.isShippable()) {
-                shippableItems.add(new ShippableItem(product.getName(), product.shippingStrategy.getWeight()));
-                shippableQuantities.add(qty);
+                shippableOrderItems.add(new ShippableOrderItem(
+                    new ShippableItem(product.getName(), product.shippingStrategy.getWeight()),
+                    qty
+                ));
             }
         }
         double shipping = 0;
-        if (!shippableItems.isEmpty()) {
-            double totalWeight = ShippingService.ship(shippableItems, shippableQuantities);
+        if (!shippableOrderItems.isEmpty()) {
+            double totalWeight = ShippingService.ship(shippableOrderItems);
             shipping = totalWeight * SHIPPING_RATE_PER_KG;
         }
         double total = subtotal + shipping;
@@ -39,20 +40,6 @@ public class CheckoutService {
             product.setQuantity(product.getQuantity() - item.getQuantity());
         }
         customer.deductBalance(total);
-        System.out.println();
-        System.out.println("=".repeat(50));
-        System.out.println("** Checkout receipt for " + customer.getName() + " **");
-        for (CartItem item : cart.getItems()) {
-            System.out.printf("%dx %s\n", item.getQuantity(), item.getProduct().getName());
-            System.out.printf("%.0f\n", item.getProduct().getPrice() * item.getQuantity());
-        }
-        System.out.println("----------------------");
-        System.out.printf("Subtotal         %.0f\n", subtotal);
-        System.out.printf("Shipping         %.0f\n", shipping);
-        System.out.printf("Amount           %.0f\n", total);
-        System.out.printf("Customer balance %.0f\n", customer.getBalance());
-        System.out.println("END.");
-        System.out.println("=".repeat(50));
-        System.out.println();
+        ReceiptPrinter.printReceipt(customer.getName(), customer.getBalance(), cart, subtotal, shipping, total);
     }
 } 
