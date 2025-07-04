@@ -1,3 +1,9 @@
+package util;
+
+import model.Cart;
+import model.CartItem;
+import model.Product;
+
 public class CartPrinter {
     public static void printCartDetails(String customerName, Cart cart) {
         System.out.println();

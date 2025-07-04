@@ -2,19 +2,19 @@
 
 ## Overview
 
-This project is a console-based e-commerce system designed as a solution for the Fawry Rise Journey Full Stack Development Internship Challenge. It demonstrates clean architecture, SOLID principles, and covers all required business scenarios for a simple e-commerce workflow.
+This project is a console-based e-commerce system designed for the Fawry Rise Journey Full Stack Development Internship Challenge. It demonstrates clean architecture, SOLID principles, and covers all required business scenarios for a simple e-commerce workflow.
 
 ---
 
 ## Features
 
-- **Product Management:**  
-  Define products with name, price, quantity, and optionally expiration and shipping requirements.
+- **model.Product Management:**  
+  Products have name, price, quantity, and can be extended with expiration and shipping features using the Decorator pattern.
 - **Expiration Handling:**  
-  Some products (e.g., Cheese, Biscuits) can expire; others (e.g., TV, Mobile Scratch Card) do not.
+  Products that can expire are wrapped with `model.ExpiringProductDecorator`.
 - **Shipping Handling:**  
-  Some products require shipping and provide weight; others do not.
-- **Cart Management:**  
+  Products that require shipping are wrapped with `model.ShippableProductDecorator`.
+- **model.Cart Management:**  
   Customers can add/remove products to/from their cart, with quantity checks.
 - **Checkout Process:**  
   - Validates cart (not empty, not expired, not out of stock, sufficient balance).
@@ -31,27 +31,29 @@ This project is a console-based e-commerce system designed as a solution for the
 ```
 src/
   Main.java                    # Entry point, contains usage scenarios and output
-  Product.java                 # Abstract product class
-  Cheese.java, Biscuits.java, TV.java, MobileScratchCard.java  # Product types
-  ExpirationStrategy.java      # Expiration strategy interface
-  DateExpirationStrategy.java, NoExpirationStrategy.java       # Expiration strategies
-  ShippingStrategy.java        # Shipping strategy interface
-  WeightShippingStrategy.java, NoShippingStrategy.java         # Shipping strategies
-  Cart.java                    # Cart management
-  CartItem.java                # Cart item (product + quantity)
-  Customer.java                # Customer data and cart
-  CheckoutService.java         # Handles checkout process
-  CheckoutStep.java            # Interface for extensible checkout steps
-  StockValidationStep.java, ExpirationValidationStep.java      # Checkout validation steps
-  ShippingCalculator.java      # Interface for shipping calculation
-  WeightBasedShippingCalculator.java                           # Shipping calculation by weight
-  ShippingService.java         # Handles shipping logic
-  ShippableItem.java           # Interface for shippable items
-  ShippableOrderItem.java      # Shippable item + quantity
-  CartPrinter.java             # Prints cart details
-  ReceiptPrinter.java          # Prints checkout receipt
-  ShippingNoticePrinter.java   # Prints shipment notice
+  model.Product.java                 # model.Product interface (Decorator pattern)
+  model.BaseProduct.java             # Core product data
+  model.ExpiringProductDecorator.java# Adds expiration logic to a product
+  model.ShippableProductDecorator.java# Adds shipping logic to a product
+  model.ProductCatalog.java          # Manages product storage and lookup
+  model.Cart.java                    # model.Cart management
+  model.CartItem.java                # model.Cart item (product + quantity)
+  model.Customer.java                # model.Customer data and cart
+  service.CheckoutService.java         # Handles checkout process
+  service.ShippingService.java         # Handles shipping logic
+  model.ShippableItem.java           # Used for shipping output
+  util.CartPrinter.java             # Prints cart details
+  util.ReceiptPrinter.java          # Prints checkout receipt
+  util.ShippingNoticePrinter.java   # Prints shipment notice
 ```
+
+---
+
+## Clean Codebase
+
+- **No unused or legacy files:** All code is up-to-date and relevant. All previous strategy, validation, or legacy files have been removed.
+- **Decorator pattern only:** All product features (expiration, shipping) are implemented using the Decorator pattern. There are no subclasses or strategy classes for products.
+- **All files are used:** Every file in `src/` is referenced in the main flow or by other classes.
 
 ---
 
@@ -102,7 +104,7 @@ Total package weight 1.1kg
 Subtotal         350
 Shipping         33
 Amount           383
-Customer balance 617
+model.Customer balance 617
 END.
 ==================================================
 ```
@@ -115,18 +117,16 @@ Error cases (e.g., trying to remove more items than in cart, or checkout with in
 
 - **SOLID Principles:**  
   The codebase is structured to follow SOLID principles for maintainability and extensibility.
-- **Strategy Pattern:**  
-  Used for expiration and shipping logic.
-- **Pipeline/Chain of Responsibility:**  
-  Used for extensible checkout validation steps.
-- **Dependency Injection:**  
-  Services and strategies are injected for flexibility and testability.
+- **Decorator Pattern:**  
+  Used for expiration and shipping logic, allowing dynamic composition of product features.
+- **Separation of Concerns:**  
+  Business logic, presentation, and data management are well separated.
 
 ---
 
 ## Assumptions
 
-- Product quantities are decremented only after successful checkout.
+- model.Product quantities are decremented only after successful checkout.
 - Expired products cannot be purchased.
 - Shipping is calculated only for shippable items.
 - All output is to the console.
@@ -136,13 +136,19 @@ Error cases (e.g., trying to remove more items than in cart, or checkout with in
 ## How to Extend
 
 - **Add new product types:**  
-  Create a new subclass of `Product`.
-- **Add new expiration or shipping logic:**  
-  Implement the respective strategy interface.
+  Create a new `model.BaseProduct` and wrap with decorators as needed.
+- **Add new product features:**  
+  Implement a new decorator and wrap products with it.
 - **Add new checkout validation:**  
-  Implement `CheckoutStep` and add to `CheckoutService`.
-- **Change shipping calculation:**  
-  Implement `ShippingCalculator` and inject into `ShippingService`.
+  Add logic to `service.CheckoutService` as needed.
+
+---
+
+## Project Status
+
+- **All code is up-to-date, clean, and free of unused files.**
+- **All product features use the Decorator pattern.**
+- **No legacy or strategy files remain.**
 
 ---
 

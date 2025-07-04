@@ -1,12 +1,17 @@
+package service;
+
+import model.ShippableItem;
+import util.ShippingNoticePrinter;
+
 import java.util.List;
 
 public class ShippingService {
     private static final double SHIPPING_RATE_PER_KG = 30.0;
 
-    public double ship(List<Shippable> items, List<Integer> quantities) {
+    public double ship(List<ShippableItem> items, List<Integer> quantities) {
         double totalWeight = 0;
         for (int i = 0; i < items.size(); i++) {
-            Shippable item = items.get(i);
+            ShippableItem item = items.get(i);
             int qty = quantities.get(i);
             totalWeight += item.getWeight() * qty;
         }

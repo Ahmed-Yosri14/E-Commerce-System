@@ -1,15 +1,35 @@
+import model.*;
+import service.CheckoutService;
+import util.CartPrinter;
+import java.time.LocalDate;
+
 public class Main {
     public static void main(String[] args) {
-        Cheese cheese = new Cheese("Cheese", 100, 10, "2026-06-10", 0.4);
-        Biscuits biscuits = new Biscuits("Biscuits", 150, 5, "2026-06-15", 0.7);
-        TV tv = new TV("TV", 5000, 3, 7.0);
-        MobileScratchCard scratchCard = new MobileScratchCard("Scratch Card", 50, 100);
+        // Create product catalog
+        ProductCatalog productCatalog = new ProductCatalog();
+        Product cheese = new BaseProduct("Cheese", 100, 10);
+        cheese = new ExpiringProductDecorator(cheese, LocalDate.parse("2026-06-10"));
+        cheese = new ShippableProductDecorator(cheese, 0.4);
+        productCatalog.addProduct(cheese);
+
+        Product biscuits = new BaseProduct("Biscuits", 150, 5);
+        biscuits = new ExpiringProductDecorator(biscuits, LocalDate.parse("2026-06-15"));
+        biscuits = new ShippableProductDecorator(biscuits, 0.7);
+        productCatalog.addProduct(biscuits);
+
+        Product tv = new BaseProduct("TV", 5000, 3);
+        tv = new ShippableProductDecorator(tv, 7.0);
+        productCatalog.addProduct(tv);
+
+        Product scratchCard = new BaseProduct("Scratch Card", 50, 100);
+        productCatalog.addProduct(scratchCard);
+
         Customer alice = new Customer("Alice", 1000);
         Customer bob = new Customer("Bob", 2000);
 
         // Add 2 cheese to Alice's cart (should succeed)
         try {
-            alice.addToCart(cheese, 2);
+            alice.addToCart(productCatalog.getProduct("Cheese"), 2);
         } catch (Exception e) {
             System.out.println("Attempted: Add 2 cheese to Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -18,7 +38,7 @@ public class Main {
 
         // Add 1 biscuits to Alice's cart (should succeed)
         try {
-            alice.addToCart(biscuits, 1);
+            alice.addToCart(productCatalog.getProduct("Biscuits"), 1);
         } catch (Exception e) {
             System.out.println("Attempted: Add 1 biscuits to Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -27,7 +47,7 @@ public class Main {
 
         // Add 3 scratch cards to Alice's cart (should succeed)
         try {
-            alice.addToCart(scratchCard, 3);
+            alice.addToCart(productCatalog.getProduct("Scratch Card"), 3);
         } catch (Exception e) {
             System.out.println("Attempted: Add 3 scratch cards to Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -36,7 +56,7 @@ public class Main {
 
         // Add 1 cheese to Bob's cart (should succeed)
         try {
-            bob.addToCart(cheese, 1);
+            bob.addToCart(productCatalog.getProduct("Cheese"), 1);
         } catch (Exception e) {
             System.out.println("Attempted: Add 1 cheese to Bob's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -45,7 +65,7 @@ public class Main {
 
         // Add 1 TV to Bob's cart (should succeed)
         try {
-            bob.addToCart(tv, 1);
+            bob.addToCart(productCatalog.getProduct("TV"), 1);
         } catch (Exception e) {
             System.out.println("Attempted: Add 1 TV to Bob's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -63,7 +83,7 @@ public class Main {
         // Remove 1 cheese from Alice's cart (should succeed)
         // Expected: Alice's cart now has 1x Cheese, 1x Biscuits, 3x Scratch Card
         try {
-            alice.removeFromCart(cheese, 1);
+            alice.removeFromCart(productCatalog.getProduct("Cheese"), 1);
         } catch (Exception e) {
             System.out.println("Attempted: Remove 1 cheese from Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -74,7 +94,7 @@ public class Main {
         // Remove all biscuits from Alice's cart (should succeed)
         // Expected: Alice's cart now has 1x Cheese, 3x Scratch Card
         try {
-            alice.removeAllFromCart(biscuits);
+            alice.removeAllFromCart(productCatalog.getProduct("Biscuits"));
         } catch (Exception e) {
             System.out.println("Attempted: Remove all biscuits from Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -85,7 +105,7 @@ public class Main {
         // Remove TV from Bob's cart (should succeed)
         // Expected: Bob's cart now has 1x Cheese
         try {
-            bob.removeFromCart(tv, 1);
+            bob.removeFromCart(productCatalog.getProduct("TV"), 1);
         } catch (Exception e) {
             System.out.println("Attempted: Remove TV from Bob's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -96,7 +116,7 @@ public class Main {
         // Try to remove TV from Alice's cart (should fail, not in cart)
         // Expected: Error message
         try {
-            alice.removeFromCart(tv, 1);
+            alice.removeFromCart(productCatalog.getProduct("TV"), 1);
         } catch (Exception e) {
             System.out.println("Attempted: Remove TV from Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -106,7 +126,7 @@ public class Main {
         // Try to remove 5 cheese from Alice's cart (should fail, only 1 in cart)
         // Expected: Error message
         try {
-            alice.removeFromCart(cheese, 5);
+            alice.removeFromCart(productCatalog.getProduct("Cheese"), 5);
         } catch (Exception e) {
             System.out.println("Attempted: Remove 5 cheese from Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -116,7 +136,7 @@ public class Main {
         // Try to remove -1 scratch card from Alice's cart (should fail, negative quantity)
         // Expected: Error message
         try {
-            alice.removeFromCart(scratchCard, -1);
+            alice.removeFromCart(productCatalog.getProduct("Scratch Card"), -1);
         } catch (Exception e) {
             System.out.println("Attempted: Remove -1 scratch card from Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -126,7 +146,7 @@ public class Main {
         // Try to remove 0 scratch card from Alice's cart (should fail, zero quantity)
         // Expected: Error message
         try {
-            alice.removeFromCart(scratchCard, 0);
+            alice.removeFromCart(productCatalog.getProduct("Scratch Card"), 0);
         } catch (Exception e) {
             System.out.println("Attempted: Remove 0 scratch card from Alice's cart");
             System.out.println("Failed: " + e.getMessage());
@@ -147,14 +167,14 @@ public class Main {
         // Prepare for checkout
         // Add 2 cheese and 1 biscuits to Alice's cart
         try {
-            alice.addToCart(cheese, 2);
+            alice.addToCart(productCatalog.getProduct("Cheese"), 2);
         } catch (Exception e) {
             System.out.println("Attempted: Add 2 cheese to Alice's cart (for checkout)");
             System.out.println("Failed: " + e.getMessage());
             System.out.println("=".repeat(50));
         }
         try {
-            alice.addToCart(biscuits, 1);
+            alice.addToCart(productCatalog.getProduct("Biscuits"), 1);
         } catch (Exception e) {
             System.out.println("Attempted: Add 1 biscuits to Alice's cart (for checkout)");
             System.out.println("Failed: " + e.getMessage());

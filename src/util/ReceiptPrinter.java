@@ -1,3 +1,8 @@
+package util;
+
+import model.Cart;
+import model.CartItem;
+
 public class ReceiptPrinter {
     public static void printReceipt(String customerName, double customerBalance, Cart cart, double subtotal, double shipping, double total) {
         System.out.println();
