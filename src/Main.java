@@ -203,5 +203,86 @@ public class Main {
             System.out.println("Failed: " + e.getMessage());
             System.out.println("=".repeat(50));
         }
+
+        // Test new cart validation features
+        System.out.println("\n=== Testing New Cart Validation Features ===");
+        
+        // Test 1: Try to add negative quantity (should fail)
+        try {
+            alice.addToCart(productCatalog.getProduct("Cheese"), -1);
+        } catch (Exception e) {
+            System.out.println("Test 1 - Add negative quantity:");
+            System.out.println("Failed: " + e.getMessage());
+            System.out.println("=".repeat(50));
+        }
+        
+        // Test 2: Try to add zero quantity (should fail)
+        try {
+            alice.addToCart(productCatalog.getProduct("Cheese"), 0);
+        } catch (Exception e) {
+            System.out.println("Test 2 - Add zero quantity:");
+            System.out.println("Failed: " + e.getMessage());
+            System.out.println("=".repeat(50));
+        }
+        
+        // Test 3: Try to add more than available stock (should fail)
+        try {
+            alice.addToCart(productCatalog.getProduct("Cheese"), 15); // Only 10 available
+        } catch (Exception e) {
+            System.out.println("Test 3 - Add more than available stock:");
+            System.out.println("Failed: " + e.getMessage());
+            System.out.println("=".repeat(50));
+        }
+        
+        // Test 4: Try to add to existing cart item that would exceed stock
+        try {
+            alice.addToCart(productCatalog.getProduct("Cheese"), 2); // Add 2 to cart
+            alice.addToCart(productCatalog.getProduct("Cheese"), 9); // Try to add 9 more (total 11 > 10 available)
+        } catch (Exception e) {
+            System.out.println("Test 4 - Add to existing cart exceeding stock:");
+            System.out.println("Failed: " + e.getMessage());
+            System.out.println("=".repeat(50));
+        }
+        
+        // Test 5: Create an expired product and try to add it
+        Product expiredCheese = new BaseProduct("Expired Cheese", 50, 5);
+        expiredCheese = new ExpiringProductDecorator(expiredCheese, LocalDate.parse("2020-01-01")); // Expired date
+        expiredCheese = new ShippableProductDecorator(expiredCheese, 0.3);
+        productCatalog.addProduct(expiredCheese);
+        
+        try {
+            alice.addToCart(expiredCheese, 1);
+        } catch (Exception e) {
+            System.out.println("Test 5 - Add expired product:");
+            System.out.println("Failed: " + e.getMessage());
+            System.out.println("=".repeat(50));
+        }
+        
+        // Test 6: Test checkout with product that expires between add and checkout
+        System.out.println("\n=== Testing Checkout with Expired Product ===");
+        
+        // Create a product that expires today
+        Product todayExpiringCheese = new BaseProduct("Today Expiring Cheese", 75, 3);
+        todayExpiringCheese = new ExpiringProductDecorator(todayExpiringCheese, LocalDate.now()); // Expires today
+        todayExpiringCheese = new ShippableProductDecorator(todayExpiringCheese, 0.4);
+        productCatalog.addProduct(todayExpiringCheese);
+        
+        // Add it to cart (should succeed if not expired yet)
+        try {
+            alice.addToCart(todayExpiringCheese, 1);
+            System.out.println("Test 6 - Added today expiring cheese to cart successfully");
+        } catch (Exception e) {
+            System.out.println("Test 6 - Failed to add today expiring cheese:");
+            System.out.println("Failed: " + e.getMessage());
+        }
+        
+        // Try to checkout (should fail if product has expired)
+        try {
+            checkoutService.checkout(alice, alice.getCart());
+        } catch (Exception e) {
+            System.out.println("Test 6 - Checkout with expired product in cart:");
+            System.out.println("Failed: " + e.getMessage());
+            System.out.println("=".repeat(50));
+        }
     }
 }

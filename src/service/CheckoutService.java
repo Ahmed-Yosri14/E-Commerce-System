@@ -21,11 +21,8 @@ public class CheckoutService {
                 throw new Exception("Insufficient stock for " + product.getName());
             }
             
-            if (product instanceof ExpiringProductDecorator) {
-                ExpiringProductDecorator expiringProduct = (ExpiringProductDecorator) product;
-                if (expiringProduct.isExpired()) {
-                    throw new Exception("Product " + product.getName() + " has expired");
-                }
+            if (product.isExpired()) {
+                throw new Exception("Product " + product.getName() + " has expired");
             }
         }
         

@@ -5,10 +5,30 @@ import java.util.*;
 public class Cart {
     private List<CartItem> items = new ArrayList<>();
 
-    public void add(Product product , int quantity) {
+    public void add(Product product , int quantity) throws Exception {
+        // Validate quantity is positive
+        if (quantity <= 0) {
+            throw new Exception("Quantity to add must be positive");
+        }
+        
+        // Check if product is expired
+        if (product.isExpired()) {
+            throw new Exception("Cannot add expired product: " + product.getName());
+        }
+        
+        // Check if requested quantity exceeds available stock
+        if (product.getQuantity() < quantity) {
+            throw new Exception("Insufficient stock for " + product.getName() + ". Available: " + product.getQuantity() + ", Requested: " + quantity);
+        }
+        
         for (CartItem item : items) {
             if (item.getProduct().equals(product)) {
-                item.setQuantity(item.getQuantity() + quantity);
+                // Check if adding to existing item would exceed stock
+                int newTotalQuantity = item.getQuantity() + quantity;
+                if (product.getQuantity() < newTotalQuantity) {
+                    throw new Exception("Insufficient stock for " + product.getName() + ". Available: " + product.getQuantity() + ", Requested total: " + newTotalQuantity);
+                }
+                item.setQuantity(newTotalQuantity);
                 return;
             }
         }
