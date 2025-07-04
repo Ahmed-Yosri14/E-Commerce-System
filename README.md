@@ -49,14 +49,6 @@ src/
 
 ---
 
-## Clean Codebase
-
-- **No unused or legacy files:** All code is up-to-date and relevant. All previous strategy, validation, or legacy files have been removed.
-- **Decorator pattern only:** All product features (expiration, shipping) are implemented using the Decorator pattern. There are no subclasses or strategy classes for products.
-- **All files are used:** Every file in `src/` is referenced in the main flow or by other classes.
-
----
-
 ## How to Run
 
 1. **Compile the project:**  
