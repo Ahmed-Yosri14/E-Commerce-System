@@ -162,9 +162,7 @@ public class Main {
         }
 
         // Setup services
-        ShippingCalculator shippingCalculator = new WeightBasedShippingCalculator();
-        ShippingService shippingService = new ShippingService(shippingCalculator);
-        CheckoutService checkoutService = new CheckoutService(shippingService);
+        CheckoutService checkoutService = new CheckoutService();
 
         // Checkout Alice (should succeed)
         // Expected: Shipment notice and checkout receipt printed to console

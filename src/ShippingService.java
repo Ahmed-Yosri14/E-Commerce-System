@@ -1,15 +1,17 @@
 import java.util.List;
 
 public class ShippingService {
-    private ShippingCalculator calculator;
+    private static final double SHIPPING_RATE_PER_KG = 30.0;
 
-    public ShippingService(ShippingCalculator calculator) {
-        this.calculator = calculator;
-    }
-
-    public double ship(List<ShippableOrderItem> orderItems) {
-        double shippingCost = calculator.calculate(orderItems);
-        ShippingNoticePrinter.printShipmentNotice(orderItems, shippingCost);
+    public double ship(List<Shippable> items, List<Integer> quantities) {
+        double totalWeight = 0;
+        for (int i = 0; i < items.size(); i++) {
+            Shippable item = items.get(i);
+            int qty = quantities.get(i);
+            totalWeight += item.getWeight() * qty;
+        }
+        double shippingCost = totalWeight * SHIPPING_RATE_PER_KG;
+        ShippingNoticePrinter.printShipmentNotice(items, quantities, shippingCost);
         return shippingCost;
     }
 } 

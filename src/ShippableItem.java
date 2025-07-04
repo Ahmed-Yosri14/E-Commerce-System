@@ -1,4 +1,4 @@
-public class ShippableItem {
+public class ShippableItem implements Shippable {
     private String name;
     private double weight;
 
@@ -7,10 +7,12 @@ public class ShippableItem {
         this.weight = weight;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public double getWeight() {
         return weight;
     }
