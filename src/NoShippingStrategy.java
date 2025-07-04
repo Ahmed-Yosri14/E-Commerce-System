@@ -4,4 +4,9 @@ public class NoShippingStrategy implements ShippingStrategy {
     public boolean isShippable() {
         return false;
     }
+
+    @Override
+    public double getWeight() {
+        return 0.0;
+    }
 }
