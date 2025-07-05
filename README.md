@@ -49,6 +49,12 @@ src/
 
 ---
 
+## Class Diagram
+
+The following diagram illustrates the main classes and relationships in the E-Commerce System:
+
+![Class Diagram](src/assets/Classdiagram.png)
+
 ## How to Run
 
 1. **Compile the project:**  
@@ -133,14 +139,6 @@ Error cases (e.g., trying to remove more items than in cart, or checkout with in
   Implement a new decorator and wrap products with it.
 - **Add new checkout validation:**  
   Add logic to `service.CheckoutService` as needed.
-
----
-
-## Project Status
-
-- **All code is up-to-date, clean, and free of unused files.**
-- **All product features use the Decorator pattern.**
-- **No legacy or strategy files remain.**
 
 ---
 
