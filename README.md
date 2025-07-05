@@ -136,14 +136,6 @@ Error cases (e.g., trying to remove more items than in cart, or checkout with in
 
 ---
 
-## Project Status
-
-- **All code is up-to-date, clean, and free of unused files.**
-- **All product features use the Decorator pattern.**
-- **No legacy or strategy files remain.**
-
----
-
 ## Author
 
 - Solution for Fawry Rise Journey Full Stack Development Internship Challenge
