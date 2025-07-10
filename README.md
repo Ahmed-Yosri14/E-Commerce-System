@@ -5,6 +5,145 @@
 This project is a console-based e-commerce system designed for the Fawry Rise Journey Full Stack Development Internship Challenge. It demonstrates clean architecture, SOLID principles, and covers all required business scenarios for a simple e-commerce workflow.
 
 ---
+## Program Output
+
+
+==================================================
+Cart details for Alice:
+2x Cheese @ 100.00 each = 200.00
+1x Biscuits @ 150.00 each = 150.00
+3x Scratch Card @ 50.00 each = 150.00
+Cart subtotal: 500.00
+==================================================
+
+
+==================================================
+Cart details for Bob:
+1x Cheese @ 100.00 each = 100.00
+1x TV @ 5000.00 each = 5000.00
+Cart subtotal: 5100.00
+==================================================
+
+
+==================================================
+Cart details for Alice:
+1x Cheese @ 100.00 each = 100.00
+1x Biscuits @ 150.00 each = 150.00
+3x Scratch Card @ 50.00 each = 150.00
+Cart subtotal: 400.00
+==================================================
+
+
+==================================================
+Cart details for Alice:
+1x Cheese @ 100.00 each = 100.00
+3x Scratch Card @ 50.00 each = 150.00
+Cart subtotal: 250.00
+==================================================
+
+
+==================================================
+Cart details for Bob:
+1x Cheese @ 100.00 each = 100.00
+Cart subtotal: 100.00
+==================================================
+
+Attempted: Remove TV from Alice's cart
+Failed: TV is not in cart
+==================================================
+Attempted: Remove 5 cheese from Alice's cart
+Failed: Cannot remove 5 of Cheese. Only 1 in cart
+==================================================
+Attempted: Remove -1 scratch card from Alice's cart
+Failed: Quantity to remove must be positive
+==================================================
+Attempted: Remove 0 scratch card from Alice's cart
+Failed: Quantity to remove must be positive
+==================================================
+
+==================================================
+Cart details for Alice:
+Cart is empty.
+==================================================
+
+
+==================================================
+** Shipment notice **
+2x Cheese
+400g
+400g
+1x Biscuits
+700g
+Total package weight 1.5kg
+==================================================
+
+
+==================================================
+** Checkout receipt for Alice **
+2x Cheese
+200
+1x Biscuits
+150
+----------------------
+Subtotal         350
+Shipping         45
+Amount           395
+Customer balance 605
+END.
+==================================================
+
+Attempted: Checkout Alice with empty cart
+Failed: Cart is empty
+==================================================
+
+=== Testing New Cart Validation Features ===
+Test 1 - Add negative quantity:
+Failed: Quantity to add must be positive
+==================================================
+Test 2 - Add zero quantity:
+Failed: Quantity to add must be positive
+==================================================
+Test 3 - Add more than available stock:
+Failed: Insufficient stock for Cheese. Available: 8, Requested: 15
+==================================================
+Test 4 - Add to existing cart exceeding stock:
+Failed: Insufficient stock for Cheese. Available: 8, Requested: 9
+==================================================
+Test 5 - Add expired product:
+Failed: Cannot add expired product: Expired Cheese
+==================================================
+
+=== Testing Checkout with Expired Product ===
+Test 6 - Added today expiring cheese to cart successfully
+
+==================================================
+** Shipment notice **
+2x Cheese
+400g
+400g
+1x Today Expiring Cheese
+400g
+Total package weight 1.2kg
+==================================================
+
+
+==================================================
+** Checkout receipt for Alice **
+2x Cheese
+200
+1x Today Expiring Cheese
+75
+----------------------
+Subtotal         275
+Shipping         36
+Amount           311
+Customer balance 294
+END.
+==================================================
+
+
+
+
 
 ## Features
 
